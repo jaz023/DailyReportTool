@@ -25,11 +25,24 @@ jobs:
 
       - name: Build EXE with PyInstaller
         run: |
-          pyinstaller --onefile fill_report.py
+          pyinstaller --onefile --name fill_report fill_report.py
 
-      - name: Upload EXE artifact
+      - name: Package bundle folder
+        run: |
+          mkdir DailyReportTool
+          copy dist\fill_report.exe DailyReportTool\
+          copy template.xlsx DailyReportTool\
+          copy mapping.xlsx DailyReportTool\
+          if exist run.bat copy run.bat DailyReportTool\
+          mkdir DailyReportTool\sources
+          mkdir DailyReportTool\output
+
+      - name: Zip DailyReportTool
+        run: |
+          powershell Compress-Archive -Path DailyReportTool\* -DestinationPath DailyReportTool.zip -Force
+
+      - name: Upload ZIP artifact
         uses: actions/upload-artifact@v4
         with:
           name: DailyReportTool
           path: DailyReportTool.zip
-
