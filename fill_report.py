@@ -277,17 +277,20 @@ def main():
 
     while True:
         try:
-            minutes = int(input("請輸入抓取區間(分鐘，表示前後各幾分鐘，例如 30): ").strip())
-            if minutes < 0:
-                raise ValueError("分鐘不可為負數。")
+            seconds = int(
+                input("請輸入抓取區間（秒，表示前後各幾秒，例如 30）: ").strip()
+            )
+            if seconds < 0:
+                raise ValueError("秒數不可為負數。")
             break
-        except Exception as e:
-            print("[ERROR] 分鐘輸入錯誤，請輸入整數，例如 30。")
+        except Exception:
+            print("[ERROR] 秒數輸入錯誤，請輸入整數，例如 30。")
 
-    start_time = center_time - timedelta(minutes=minutes)
-    end_time   = center_time + timedelta(minutes=minutes)
+    start_time = center_time - timedelta(seconds=seconds)
+    end_time   = center_time + timedelta(seconds=seconds)
 
     print(f"抓取範圍：{start_time} ~ {end_time}")
+
 
     map_df = pd.read_excel(MAPPING_XLSX, sheet_name="Map")
     for col in ["SourceName", "TargetCell"]:
@@ -355,7 +358,7 @@ def main():
     ensure_dir(OUTPUT_DIR)
     out_path = os.path.join(
         OUTPUT_DIR,
-        f"DailyReport_{center_time.strftime('%Y%m%d_%H%M')}_pm{minutes}.xlsx"
+        f"DailyReport_{center_time.strftime('%Y%m%d_%H%M')}_pm{seconds}.xlsx"
     )
     wb.save(out_path)
 
@@ -372,3 +375,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
